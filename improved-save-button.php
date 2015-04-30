@@ -3,7 +3,7 @@
 Plugin Name: Improved Save Button
 Description: Adds a "Save" button to the post edit screen that saves the post and immediately redirect to one of the common page: the post listing, the new post form or the previous or next post edit page.
 Author: Label Blanc
-Version: 1.0
+Version: 1.0.1
 Author URI: http://www.labelblanc.ca
 Domain Path: /languages/
 Text Domain: lb-save-and-then
@@ -49,26 +49,6 @@ if( !class_exists( 'LB_Save_And_Then' ) ) {
  * define the list of 'actions'.
  */
 class LB_Save_And_Then {
-
-	/**
-	 * Parameter defining the action to do after saving.
-	 * Used in the redirection.
-	 */
-	const HTTP_PARAM_ACTION = 'lb-sat-action';
-
-	/**
-	 * Parameter defining the id of the post that was being modified
-	 * before the redirect.
-	 * Used in the success message display.
-	 */
-	const HTTP_PARAM_UPDATED_POST_ID = 'lb-sat-updated-post-id';
-
-	/**
-	 * Parameter defining the page where we were before getting to the
-	 * current post edit screen.
-	 * Used in the redirection.
-	 */
-	const HTTP_PARAM_REFERER = 'lb-sat-referer';
 
 	/**
 	 * Id of the 'use last' action

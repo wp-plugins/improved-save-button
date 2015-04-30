@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Improved Save Button package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Improved Save Button 1.0\n"
+"Project-Id-Version: Improved Save Button 1.0.1\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/improved-save-button\n"
-"POT-Creation-Date: 2015-02-20 00:29:27+00:00\n"
+"POT-Creation-Date: 2015-04-30 22:13:27+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,116 +25,116 @@ msgstr ""
 "X-Poedit-Bookmarks: \n"
 "X-Textdomain-Support: yes\n"
 
-#: improved-save-button.php:130
+#: improved-save-button.php:110
 msgid "Save and New"
 msgstr ""
 
-#: improved-save-button.php:131
+#: improved-save-button.php:111
 msgid "%s and New"
 msgstr ""
 
-#: improved-save-button.php:132
+#: improved-save-button.php:112
 msgid "Shows the <strong>new post</strong> form after save."
 msgstr ""
 
-#: improved-save-button.php:135
+#: improved-save-button.php:115
 msgid "Save and List"
 msgstr ""
 
-#: improved-save-button.php:136
+#: improved-save-button.php:116
 msgid "%s and List"
 msgstr ""
 
-#: improved-save-button.php:137
+#: improved-save-button.php:117
 msgid "Shows the <strong>posts list</strong> after save."
 msgstr ""
 
-#: improved-save-button.php:140
+#: improved-save-button.php:120
 msgid "Save and Next"
 msgstr ""
 
-#: improved-save-button.php:141
+#: improved-save-button.php:121
 msgid "%s and Next"
 msgstr ""
 
-#: improved-save-button.php:142
+#: improved-save-button.php:122
 msgid "Shows the <strong>next post</strong> edit form after save."
 msgstr ""
 
-#: improved-save-button.php:145
+#: improved-save-button.php:125
 msgid "Save and Previous"
 msgstr ""
 
-#: improved-save-button.php:146
+#: improved-save-button.php:126
 msgid "%s and Previous"
 msgstr ""
 
-#: improved-save-button.php:147
+#: improved-save-button.php:127
 msgid "Shows the <strong>previous post</strong> edit form after save."
 msgstr ""
 
-#: lib/class-lb-save-and-then-messages.php:135
+#: lib/class-lb-save-and-then-messages.php:156
 msgid "Post updated. <a href=\"%s\">View post</a>"
 msgstr ""
 
-#: lib/class-lb-save-and-then-messages.php:136
+#: lib/class-lb-save-and-then-messages.php:157
 msgid "Post updated."
 msgstr ""
 
-#: lib/class-lb-save-and-then-messages.php:137
+#: lib/class-lb-save-and-then-messages.php:158
 msgid "Post published. <a href=\"%s\">View post</a>"
 msgstr ""
 
-#: lib/class-lb-save-and-then-messages.php:138
+#: lib/class-lb-save-and-then-messages.php:159
 msgid "Post submitted. <a target=\"_blank\" href=\"%s\">Preview post</a>"
 msgstr ""
 
-#: lib/class-lb-save-and-then-messages.php:140
+#: lib/class-lb-save-and-then-messages.php:161
 msgid ""
 "Post scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" "
 "href=\"%2$s\">Preview post</a>"
 msgstr ""
 
-#: lib/class-lb-save-and-then-messages.php:141
-#: lib/class-lb-save-and-then-messages.php:153
+#: lib/class-lb-save-and-then-messages.php:162
+#: lib/class-lb-save-and-then-messages.php:174
 msgid "M j, Y @ G:i"
 msgstr ""
 
-#: lib/class-lb-save-and-then-messages.php:143
+#: lib/class-lb-save-and-then-messages.php:164
 msgid "Post draft updated. <a target=\"_blank\" href=\"%s\">Preview post</a>"
 msgstr ""
 
-#: lib/class-lb-save-and-then-messages.php:147
+#: lib/class-lb-save-and-then-messages.php:168
 msgid "Page updated. <a href=\"%s\">View page</a>"
 msgstr ""
 
-#: lib/class-lb-save-and-then-messages.php:148
+#: lib/class-lb-save-and-then-messages.php:169
 msgid "Page updated."
 msgstr ""
 
-#: lib/class-lb-save-and-then-messages.php:149
+#: lib/class-lb-save-and-then-messages.php:170
 msgid "Page published. <a href=\"%s\">View page</a>"
 msgstr ""
 
-#: lib/class-lb-save-and-then-messages.php:150
+#: lib/class-lb-save-and-then-messages.php:171
 msgid "Page submitted. <a target=\"_blank\" href=\"%s\">Preview page</a>"
 msgstr ""
 
-#: lib/class-lb-save-and-then-messages.php:152
+#: lib/class-lb-save-and-then-messages.php:173
 msgid ""
 "Page scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" "
 "href=\"%2$s\">Preview page</a>"
 msgstr ""
 
-#: lib/class-lb-save-and-then-messages.php:155
+#: lib/class-lb-save-and-then-messages.php:176
 msgid "Page draft updated. <a target=\"_blank\" href=\"%s\">Preview page</a>"
 msgstr ""
 
-#: lib/class-lb-save-and-then-post-edit.php:124
+#: lib/class-lb-save-and-then-post-edit.php:142
 msgid "You are at the last post"
 msgstr ""
 
-#: lib/class-lb-save-and-then-post-edit.php:128
+#: lib/class-lb-save-and-then-post-edit.php:146
 msgid "You are at the first post"
 msgstr ""
 

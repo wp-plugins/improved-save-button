@@ -30,6 +30,11 @@ if( ! class_exists( 'LB_Save_And_Then_Post_Edit' ) ) {
 class LB_Save_And_Then_Post_Edit {
 
 	/**
+	 * URL parameter defining the action to do after saving.
+	 */
+	const HTTP_PARAM_ACTION = 'lb-sat-action';
+
+	/**
 	 * Main entry point. Setups all the Wordpress hooks.
 	 */
 	static function setup() {
@@ -55,9 +60,23 @@ class LB_Save_And_Then_Post_Edit {
 			'lb-save-and-then-post-edit',
 			LB_Save_And_Then_Utils::plugins_url( "js/post-edit{$min}.js" ),
 			array('jquery', 'utils'),
-			'1.0',
+			'1.0.1',
 			true
 		);
+
+		// If Wordpress version < 4.2, we include the backward-compatibility
+		// script.
+		$wp_version = get_bloginfo('version');
+
+		if( version_compare( $wp_version, '4.2', '<' ) ) {
+			wp_enqueue_script(
+				'lb-save-and-then-post-edit-pre-4.2',
+				LB_Save_And_Then_Utils::plugins_url( "js/backward-compatibility/post-edit.pre-4.2{$min}.js" ),
+				array('lb-save-and-then-post-edit'),
+				'1.0',
+				true
+			);
+		}
 
 		wp_enqueue_style(
 			'lb-save-and-then-post-edit',
@@ -65,7 +84,6 @@ class LB_Save_And_Then_Post_Edit {
 			array(),
 			'1.0'
 		);
-
 		if( function_exists('wp_style_add_data') ) {
 			wp_style_add_data( 'lb-save-and-then-post-edit', 'rtl', 'replace' );
 		}
@@ -138,12 +156,12 @@ class LB_Save_And_Then_Post_Edit {
 		echo 'window.LabelBlanc = window.LabelBlanc || {};';
 		echo 'window.LabelBlanc.SaveAndThen = window.LabelBlanc.SaveAndThen || {};';
 		echo 'window.LabelBlanc.SaveAndThen.ACTION_LAST = "' . LB_Save_And_Then::ACTION_LAST . '";';
-		echo 'window.LabelBlanc.SaveAndThen.HTTP_PARAM_ACTION = "' . LB_Save_And_Then::HTTP_PARAM_ACTION . '";';
+		echo 'window.LabelBlanc.SaveAndThen.HTTP_PARAM_ACTION = "' . self::HTTP_PARAM_ACTION . '";';
 		echo 'window.LabelBlanc.SaveAndThen.config = ' . json_encode( $js_object );
 		echo '</script>';
 
 		// Output of the referer in a hidden field
-		echo '<input type="hidden" name="' . LB_Save_And_Then::HTTP_PARAM_REFERER . '" value="' . wp_get_referer() . '" />';
+		echo '<input type="hidden" name="' . LB_Save_And_Then_Redirect::HTTP_PARAM_REFERER . '" value="' . wp_get_referer() . '" />';
 	}
 } // end class
 
