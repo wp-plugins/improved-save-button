@@ -55,6 +55,7 @@ window.LabelBlanc.SaveAndThen = window.LabelBlanc.SaveAndThen || {};
 
 		this.$form = $form;
 		this.config = config;
+		this.action = null;
 
 		/**
 		 * The default action to show on the button. May be overwritten
@@ -68,7 +69,8 @@ window.LabelBlanc.SaveAndThen = window.LabelBlanc.SaveAndThen || {};
 		 * Special case : if there is only one action, and it is not
 		 * enabled (ex : only the "Save and previous", but there is no
 		 * previous post), we save in the configuration that the
-		 * button set is "dummy".
+		 * button set is "dummy" (i.e. we show it, but it won't do
+		 * anything).
 		 */
 		if( config.actions.length === 1 && ! config.actions[0].enabled ) {
 			this.config.newButtonSetIsDummy = true;
@@ -169,17 +171,6 @@ window.LabelBlanc.SaveAndThen = window.LabelBlanc.SaveAndThen || {};
 		},
 
 		/**
-		 * Setups listeners on form submit.
-		 */
-		setupFormListeners : function() {
-			var self = this;
-
-			this.$form.on('submit', function() {
-				self.newPublishButtonSet.disable( true );
-			});
-		},
-
-		/**
 		 * Updates the look of the original publish button, depending
 		 * if the new publish button must be displayed as the default
 		 * or not.
@@ -200,8 +191,75 @@ window.LabelBlanc.SaveAndThen = window.LabelBlanc.SaveAndThen || {};
 		 * @requires wpCookies in wordpress/wp-includes/js/utils.js
 		 */
 		setAction : function( newAction ) {
+			this.action = newAction;
 			wpCookies.set( SAT.PostEditForm.LAST_USED_COOKIE_NAME, newAction.id, 365*24*3600 );
 			this.$actionInput.val( newAction.id );
+		},
+
+		/**
+		 * Returns the action that was set by setAction
+		 * @return {object} The action
+		 */
+		getAction : function() {
+			return this.action;
+		},
+
+		/**
+		 * Submits the form through the use of the action button.
+		 */
+		submit : function() {
+			// We set the action to the one currently in the button
+			this.setAction( this.newPublishButtonSet.getAction() );
+
+			// We trigger the custom event
+			var customSubmitEvent = $.Event('lb-save-and-then:submit');
+
+			/*
+			 * The 'lb-save-and-then:submit' event will be triggered
+			 * on the $form. A listening method can prevent the
+			 * form submition by calling preventDefault() on the event.
+			 */
+			this.$form.trigger( customSubmitEvent, this );
+
+			if( customSubmitEvent.isDefaultPrevented() ) {
+				return;
+			}
+
+			// Save in the form that it was submitted by
+			// the save-and-then button and submits it
+			this.$form.data('lbsat-button-submitted', true);
+
+			// We trigger a click on the original button, so
+			// its name is correctly sent in the HTTP request
+			this.getOriginalPublishButton().click();
+		},
+
+		/**
+		 * Setups listeners on the form submit (no matter which
+		 * button/trigger submitted it).
+		 */
+		setupFormListeners: function() {
+			var self = this;
+
+			this.$form.on('submit.lbsat-post-edit', function( event ) {
+				// Will be true if the form was submitted by the action button
+				var isSATSubmitted = self.$form.data('lbsat-button-submitted');
+
+				self.$form.removeData('lbsat-button-submitted');
+
+				if( event.isDefaultPrevented() ) {
+					return;
+				}
+
+				// If it was submitted through the use of the action
+				if( isSATSubmitted === true ) {
+					// When the form is effectively submitted, we move the
+					// spinner just before the new button container
+					self.newPublishButtonSet.$container.before( self.$spinner );
+
+					// Browser form submission process continues ...
+				}
+			});
 		},
 
 		/**
@@ -233,7 +291,7 @@ window.LabelBlanc.SaveAndThen = window.LabelBlanc.SaveAndThen || {};
 			}
 
 			// If it is '_last', we get it from the cookie. If no cookie : fallback
-			if( SAT.ACTION_LAST === defaultActionId ) {
+			if( SAT.ACTION_LAST_ID === defaultActionId ) {
 				var cookieVal = wpCookies.get( SAT.PostEditForm.LAST_USED_COOKIE_NAME );
 
 				if( ! cookieVal ) {
@@ -280,6 +338,35 @@ window.LabelBlanc.SaveAndThen = window.LabelBlanc.SaveAndThen || {};
 		 */
 		setupWordpressListeners : function() {
 			var self = this;
+
+			// When the form is submitted (no matter which button or
+			// technique was used to submit it), we disable the button.
+			// But some submit buttons must not disable the button
+			// (like the preview button). We thus listen to clicks
+			// on all submit buttons and disable only on specific cases
+			// @see wordpress/wp-admin/js/post.js:245
+			this.$form.on( 'click.lbsat-post-edit', ':submit, a.submitdelete, #post-preview', function( event ) {
+				var $button = $(this);
+
+				if ( $button.hasClass('disabled') ) {
+					return;
+				}
+
+				if ( $button.hasClass('submitdelete') || $button.is( '#post-preview' ) ) {
+					return;
+				}
+
+				// Since it is possible to have a click on a submit button
+				// but no actual form submit (ex: browser validation), we listen
+				// to an actual form submition
+				self.$form.one('submit.lbsat-post-edit', function( event ) {
+					if ( event.isDefaultPrevented() ) {
+						return;
+					}
+
+					self.newPublishButtonSet.disable( true );
+				});
+			});
 
 			// Disable button while auto saving
 			// @see wordpress/wp-admin/js/post.js
@@ -349,7 +436,8 @@ window.LabelBlanc.SaveAndThen = window.LabelBlanc.SaveAndThen || {};
 		 * @return {jQuery} The main button
 		 */
 		createMainButton : function() {
-			var $mainButton = $('<input type="button" />');
+			// A non-submitting button
+			var $mainButton = $('<button type="button"/>');
 
 			$mainButton.attr('class', 'button button-large lb-sat-main-button' );
 
@@ -461,11 +549,8 @@ window.LabelBlanc.SaveAndThen = window.LabelBlanc.SaveAndThen || {};
 				if ( $(this).hasClass('disabled') || self.config.newButtonSetIsDummy ) {
 					return;
 				}
-				// We move the spinner just before the new button container
-				self.$container.before( self.postEditForm.$spinner );
 
-				self.postEditForm.setAction( self.action );
-				self.postEditForm.$originalPublishButton.trigger('click');
+				self.postEditForm.submit();
 			});
 		},
 
@@ -496,6 +581,7 @@ window.LabelBlanc.SaveAndThen = window.LabelBlanc.SaveAndThen || {};
 				if( $(this).hasClass('disabled') || self.config.newButtonSetIsDummy ) {
 					return;
 				}
+
 				self.setAction( $(this).data('lbSatActionData') );
 				self.$mainButton.click();
 			});
@@ -534,18 +620,31 @@ window.LabelBlanc.SaveAndThen = window.LabelBlanc.SaveAndThen || {};
 		},
 
 		/**
+		 * Returns the action
+		 * @return {object} The action
+		 */
+		getAction : function() {
+			return this.action;
+		},
+
+		/**
 		 * Updates the label of the main menu and the dropdown menu elements
 		 * based on the currently set action and the value of the original
-		 * button.
+		 * button. Also updates the title attribute.
 		 */
 		updateLabels : function() {
 			var self = this;
 
-			this.$mainButton.val( this.generateButtonLabel( this.action.buttonLabelPattern ) );
+			// Set the button value
+			this.$mainButton.html( this.generateButtonLabel( this.action.buttonLabelPattern ) );
 
+			// Set the button title
+			this.$mainButton.attr('title', this.action.title ? this.action.title : '' );
+
+			// Update the actions in the dropdown
 			$.each( this.config.actions, function( i, actionData ) {
-				var $li = self.$dropdownMenu.find('[data-lb-sat-value=' + actionData.id + ']');
-				$li.text( self.generateButtonLabel( actionData.buttonLabelPattern ) );
+				var $li = self.$dropdownMenu.find('[data-lb-sat-value="' + actionData.id + '"]');
+				$li.html( self.generateButtonLabel( actionData.buttonLabelPattern ) );
 			});
 		},
 
@@ -570,12 +669,10 @@ window.LabelBlanc.SaveAndThen = window.LabelBlanc.SaveAndThen || {};
 			this.$mainButton.toggleClass( 'disabled', disabled );
 			this.$dropdownButton.toggleClass( 'disabled', disabled );
 
-			if( disabled ) {
-				this.hideMenu();
-				this.$mainButton.prop( 'disabled', true );
-			} else {
-				this.$mainButton.prop( 'disabled', false );
-			}
+			// Since Wordpress and some plugins (ACF, for example)
+			// do not use or expect the 'disabled' property, we
+			// do not use it either, using only the .disabled class
+			// i.e.: this.$mainButton.prop('disabled', disabled);
 		}
 	};
 
