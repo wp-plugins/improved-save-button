@@ -1,4 +1,4 @@
-=== @@plugin.name ===
+=== Improved Save Button ===
 Contributors: LabelBlanc
 Tags: publish, save, close, list, edit, editing, return to list, close post, posts list, update, save and new, save and return, save and list, save and next, next post, save and previous, save and view, previous post, admin, administration, editor, multisite, custom post type, page, post
 Requires at least: 3.5
@@ -34,12 +34,12 @@ Detail of the actions this new button allows:
 
 == Installation ==
 
-1. Download @@plugin.name.
+1. Download Improved Save Button.
 2. Upload the 'improved-save-button' directory to your '/wp-content/plugins/' directory, using your favorite method (ftp, sftp, scp, etc...)
-3. Activate @@plugin.name from your Plugins page.
+3. Activate Improved Save Button from your Plugins page.
 
 = Extra =
-Visit 'Settings > @@plugin.name' to adjust the configuration to your needs.
+Visit 'Settings > Improved Save Button' to adjust the configuration to your needs.
 
 == Screenshots ==
 
